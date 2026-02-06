@@ -10,7 +10,7 @@ from numpy.ma.core import resize
 
 normal_text = ""
 router = Router()
-API_TOKEN = 'Ваш токен'
+API_TOKEN = '7247367657:AAH1kJCfIwsQZ7cboyWuqRHt9ZdD9sZdGpo'
 
 # Клавиатуры инициализация
 kb = [[types.KeyboardButton(text="Начать обучение")]]
@@ -34,16 +34,23 @@ kb_end_start = [[types.KeyboardButton(text = "Как избежать пробл
 
 kb_end_end = [[types.KeyboardButton(text="Назад")]]
 
+#Кнопки
 PO_button = InlineKeyboardButton(text="ПО", callback_data="send_alert")
 danns_button = InlineKeyboardButton(text="Персональные данные", callback_data="send_alert")
 FISH_button = InlineKeyboardButton(text="Фишинг", callback_data="send_alert")
 virus_button = InlineKeyboardButton(text="Вирус", callback_data="send_alert")
 account_button = InlineKeyboardButton(text="Аккаунт", callback_data="send_alert")
 meneger_pas_button = InlineKeyboardButton(text="Менеджер паролей", callback_data="send_alert")
-one_rang_system_button = InlineKeyboardButton(text="")
-PO_and_danns = [[PO_button, danns_button, meneger_pas_button]]
-fish_virus_and_account = [[FISH_button, virus_button, account_button]]
+one_rang_system_button = InlineKeyboardButton(text="Одноранговые сети")
+dom_button = InlineKeyboardButton(text="Доменные имена",callback_data="send_alert")
+anti_virus_button = InlineKeyboardButton(text="Антивирусные программы", callback_data="send_alert")
 
+#Клавиатуры
+PO_and_danns = [[PO_button, danns_button, meneger_pas_button]]
+PO_and_one_system = [[PO_button, one_rang_system_button]]
+fish_virus_and_account = [[FISH_button, virus_button, account_button]]
+dom_and_all = [[dom_button]]
+anti_virus_all = [[anti_virus_button]]
 
 # Класс состояний
 class Survey(StatesGroup):
@@ -79,7 +86,14 @@ def PO_and_danns_keyboard():
 def fish_virus_and_account_keyboard():
     return InlineKeyboardMarkup(inline_keyboard=fish_virus_and_account, row_width=3)
 
-def
+def anti_virus_keyboard():
+    return InlineKeyboardMarkup(inline_keyboard=anti_virus_all,row_width=1)
+
+def dom_and_all_keyboard():
+    return InlineKeyboardMarkup(inline_keyboard=dom_and_all, row_width=1)
+
+def PO_and_sety_keyboard():
+    return InlineKeyboardMarkup(inline_keyboard=PO_and_one_system, row_width=2)
 
 def keyboard5():
     return ReplyKeyboardMarkup(resize_keyboard=True, keyboard=kb_end_start)
@@ -157,7 +171,7 @@ async def main():
                                      "\n К ним относятся открытие незапрошенных вложений в электронной почте, посещение неизвестных веб-страниц, скачивание программ с "
                                      "недоверенных сайтов или одноранговых сетей передачи файлов.",reply_markup=keyboard4())
 
-                await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
+                await message.answer("Выбери слово которое тебе было непонятно", reply_markup=PO_and_danns_keyboard())
                 if message.text == "Назад":
                     await state.set_state(SurveySecurity.question3)
                     await message.answer("О чём бы ты хотел узнать получше?", reply_markup=keyboard3())
@@ -172,7 +186,7 @@ async def main():
                                      "\n 3.	Избегайте спешки и панической реакции. "
                                      "\n Мошенники рассчитывают на них, чтобы заставить вас перейти по ссылке или открыть вложение.",reply_markup=keyboard4())
 
-                await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
+                # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
                 if message.text == "Назад":
                     await state.set_state(SurveySecurity.question3)
                     await message.answer("О чём бы ты хотел узнать получше?", reply_markup=keyboard3())
@@ -187,7 +201,7 @@ async def main():
                                      "\n 2.	Не верьте уловкам мошенников, предлагающих слишком низкие цены или внезапное богатство"
                                      "\n Спросите себя: а не слишком ли это хорошо, чтобы быть правдой?",reply_markup=keyboard4())
 
-                await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
+                await message.answer("Выбери слово которое тебе было непонятно", reply_markup=dom_and_all_keyboard())
                 if message.text == "Назад":
                     await state.set_state(SurveySecurity.question3)
                     await message.answer("О чём бы ты хотел узнать получше?", reply_markup=keyboard3())
@@ -202,7 +216,7 @@ async def main():
                                      "\n 3.	Будьте внимательны в социальных сетях"
                                      "\n Действия детей и подростков в социальных сетях требуют особой осторожности и внимания.",reply_markup=keyboard4())
 
-                await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
+                await message.answer("Выбери слово которое тебе было непонятно", reply_markup=anti_virus_keyboard())
                 if message.text == "Назад":
                     await state.set_state(SurveySecurity.question3)
                     await message.answer("О чём бы ты хотел узнать получше?", reply_markup=keyboard3())
@@ -217,7 +231,7 @@ async def main():
                                      "\n 2.	Сами не становитесь агрессором"
                                      "\n Относитесь бережно к чувствам других людей и уважайте их право на свое мнение.",reply_markup=keyboard4())
 
-                await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
+                # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
                 if message.text == "Назад":
                     await state.set_state(SurveySecurity.question3)
                     await message.answer("О чём бы ты хотел узнать получше?", reply_markup=keyboard3())
@@ -242,8 +256,6 @@ async def main():
                 await message.answer("О чём бы ты хотел узнать поподробнее?", reply_markup=keyboard2())
             else:
                 await message.answer("Привет", reply_markup=keyboard4())
-
-                await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
                 if message.text == "Назад":
                     await state.set_state(Survey.question2)
                     await message.answer("О чём бы ты хотел узнать поподробнее?", reply_markup=keyboard2())
@@ -259,7 +271,7 @@ async def main():
                                      "\n 2.	Убедитесь, что ваши устройства защищены."
                                      "\n Используйте пароли, секретные коды и другие средства безопасности, такие как считывание отпечатков пальцев или технологию распознавания лица.",reply_markup=keyboard4())
 
-                await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
+                # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=())
                 if message.text == "Назад":
                     await state.set_state(SurveySecurity.question3)
                     await message.answer("О чём бы ты хотел узнать получше?", reply_markup=keyboard3())
@@ -292,7 +304,7 @@ async def main():
                 "или даже запретить к ней доступ.",
                 reply_markup=keyboard5())
 
-            await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
+            # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=)
 
         elif message.text == "Утечки данных":
             normal_text = "Утечки данных"
@@ -302,7 +314,7 @@ async def main():
                 "\n Личная информация и учетные данные множества людей могут быть использованы для хищения их личных документов и паролей, проведения незаконных финансовых операций и кражи цифровой личности целиком.",
                 reply_markup=keyboard5())
 
-            await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
+            # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=)
 
         elif message.text == "Вредоносные программы и вирусы":
             normal_text = "Вредоносные программы и вирусы"
@@ -311,7 +323,7 @@ async def main():
                 "Под вредоносной программой подразумевается любая программа, созданная для выполнения любого несанкционированного — и, как правило, вредоносного — действия на устройстве пользователя (например, вирусы)."
                 , reply_markup=keyboard5())
 
-            await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
+            # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=)
 
         elif message.text == "Фишинговые электронные письма":
             normal_text = "Фишинговые электронные письма"
@@ -321,7 +333,7 @@ async def main():
                                  'украсть реквизиты вашей банковской карты.'
                                  , reply_markup=keyboard5())
 
-            await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
+            # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=)
 
         elif message.text == "Поддельные сайты":
             normal_text = "Поддельные сайты"
@@ -330,7 +342,7 @@ async def main():
                 "Поддельные сайты – это любые сайты, которые мошенники используют незаконно для обмана пользователей или организации вредоносных атак."
                 , reply_markup=keyboard5())
 
-            await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
+            # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=)
 
         elif message.text == "Неприемлемый контент":
             normal_text = "Неприемлемый контент"
@@ -338,7 +350,7 @@ async def main():
             await message.answer("Неприемлемый контент может принимать различные формы: от неточной информации до контента, который может привести вашего ребенка к противоправному поведению"
                                  , reply_markup=keyboard5())
 
-            await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
+            # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=)
 
         elif message.text == "Кибербуллинг":
             normal_text = "Кибербуллинг"
@@ -346,7 +358,7 @@ async def main():
             await message.answer("Кибербуллинг (он же интернет-травля) – это травля человека или группы людей с использованием технических средств по электронной почте, в мессенджерах, социальных сетях."
                                  , reply_markup=keyboard5())
 
-            await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
+            # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=)
 
         elif message.text == "Неверные настройки конфиденциальности":
             normal_text = "Неверные настройки конфиденциальности"
@@ -355,7 +367,7 @@ async def main():
                 "Конфиденциальность данных — это один из ключевых аспектов кибербезопасности, который направлен на защиту личной и корпоративной информации от несанкционированного доступа"
                 , reply_markup=keyboard5())
 
-            await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
+            # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=)
 
         elif message.text == "Назад":
             await state.set_state(Survey.question2)
@@ -390,7 +402,7 @@ async def main():
                 "\nЗвонки с угрозами могут поступать лично вам или содержать, например, требования выплатить значительную сумму денег.",
                 reply_markup=keyboard5())
 
-            # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
+            # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=)
 
         # Одна из трех кнопок в начале
 
