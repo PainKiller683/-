@@ -10,8 +10,8 @@ from numpy.ma.core import resize
 
 normal_text = ""
 router = Router()
-API_TOKEN = '7247367657:AAH1kJCfIwsQZ7cboyWuqRHt9ZdD9sZdGpo'
-
+API_TOKEN = ''
+clicked_word = ""
 # Клавиатуры инициализация
 kb = [[types.KeyboardButton(text="Начать обучение")]]
 
@@ -35,22 +35,46 @@ kb_end_start = [[types.KeyboardButton(text = "Как избежать пробл
 kb_end_end = [[types.KeyboardButton(text="Назад")]]
 
 #Кнопки
-PO_button = InlineKeyboardButton(text="ПО", callback_data="send_alert")
-danns_button = InlineKeyboardButton(text="Персональные данные", callback_data="send_alert")
-FISH_button = InlineKeyboardButton(text="Фишинг", callback_data="send_alert")
-virus_button = InlineKeyboardButton(text="Вирус", callback_data="send_alert")
-account_button = InlineKeyboardButton(text="Аккаунт", callback_data="send_alert")
-meneger_pas_button = InlineKeyboardButton(text="Менеджер паролей", callback_data="send_alert")
-one_rang_system_button = InlineKeyboardButton(text="Одноранговые сети")
-dom_button = InlineKeyboardButton(text="Доменные имена",callback_data="send_alert")
-anti_virus_button = InlineKeyboardButton(text="Антивирусные программы", callback_data="send_alert")
+PO_button = InlineKeyboardButton(text="ПО", callback_data="ПО")
+danns_button = InlineKeyboardButton(text="Персональные данные", callback_data="Персональные данные")
+FISH_button = InlineKeyboardButton(text="Фишинг", callback_data="Фишинг")
+virus_button = InlineKeyboardButton(text="Вирус", callback_data="Вирус")
+account_button = InlineKeyboardButton(text="Аккаунт", callback_data="Аккаунт")
+meneger_pas_button = InlineKeyboardButton(text="Менеджер паролей", callback_data="Менеджер паролей")
+one_rang_system_button = InlineKeyboardButton(text="Одноранговые сети", callback_data="Одноранговые сети")
+dom_button = InlineKeyboardButton(text="Доменные имена", callback_data="Доменные имена")
+anti_virus_button = InlineKeyboardButton(text="Антивирусные программы", callback_data="Антивирусные программы")
 
-#Клавиатуры
-PO_and_danns = [[PO_button, danns_button, meneger_pas_button]]
-PO_and_one_system = [[PO_button, one_rang_system_button]]
-fish_virus_and_account = [[FISH_button, virus_button, account_button]]
-dom_and_all = [[dom_button]]
-anti_virus_all = [[anti_virus_button]]
+kb_data_security = [
+    [PO_button, danns_button],
+    [meneger_pas_button]
+]
+
+# Вредоносные программы и вирусы
+kb_virus = [
+    [PO_button],
+    [one_rang_system_button],
+    [anti_virus_button]
+]
+
+# Фишинговые письма / мессенджеры
+kb_phishing = [
+    [FISH_button],
+    [virus_button, account_button]
+]
+
+# Поддельные сайты
+kb_fake_sites = [
+    [dom_button]
+]
+
+# Настройки конфиденциальности
+kb_privacy = [
+    [danns_button],
+    [account_button]
+]
+
+kb_programs = [[anti_virus_button]]
 
 # Класс состояний
 class Survey(StatesGroup):
@@ -76,27 +100,85 @@ def keyboard2():
 def keyboard3():
     return ReplyKeyboardMarkup(resize_keyboard=True, keyboard=kb_start_end)
 
+def antivirus_keyboard():
+    return InlineKeyboardMarkup(inkeyboard=kb_programs)
 
 def keyboard4():
     return ReplyKeyboardMarkup(resize_keyboard=True, keyboard=kb_end_end)
 
-def PO_and_danns_keyboard():
-    return InlineKeyboardMarkup(inline_keyboard=PO_and_danns, row_width=2)
+def data_security_keyboard():
+    return InlineKeyboardMarkup(inline_keyboard=kb_data_security)
 
-def fish_virus_and_account_keyboard():
-    return InlineKeyboardMarkup(inline_keyboard=fish_virus_and_account, row_width=3)
+def virus_keyboard():
+    return InlineKeyboardMarkup(inline_keyboard=kb_virus)
 
-def anti_virus_keyboard():
-    return InlineKeyboardMarkup(inline_keyboard=anti_virus_all,row_width=1)
+def phishing_keyboard():
+    return InlineKeyboardMarkup(inline_keyboard=kb_phishing)
 
-def dom_and_all_keyboard():
-    return InlineKeyboardMarkup(inline_keyboard=dom_and_all, row_width=1)
+def fake_sites_keyboard():
+    return InlineKeyboardMarkup(inline_keyboard=kb_fake_sites)
 
-def PO_and_sety_keyboard():
-    return InlineKeyboardMarkup(inline_keyboard=PO_and_one_system, row_width=2)
+def privacy_keyboard():
+    return InlineKeyboardMarkup(inline_keyboard=kb_privacy)
 
 def keyboard5():
     return ReplyKeyboardMarkup(resize_keyboard=True, keyboard=kb_end_start)
+
+async def send_word_explanation(message: types.Message):
+    global clicked_word
+
+    explanations = {
+        "ПО": (
+            "ПО (программное обеспечение) — это все программы, "
+            "которые работают на компьютере или телефоне: операционная система, "
+            "приложения, игры и т.д."
+        ),
+
+        "Персональные данные": (
+            "Персональные данные — это любая информация, по которой можно "
+            "идентифицировать человека: имя, номер телефона, адрес, паспортные данные, "
+            "логины и пароли."
+        ),
+
+        "Фишинг": (
+            "Фишинг — это вид интернет-мошенничества, при котором злоумышленники "
+            "маскируются под банки, сервисы или знакомых, чтобы украсть ваши данные."
+        ),
+
+        "Вирус": (
+            "Вирус — это вредоносная программа, которая может повредить устройство, "
+            "украсть информацию или замедлить работу системы."
+        ),
+
+        "Аккаунт": (
+            "Аккаунт — это учетная запись пользователя в сервисе или приложении, "
+            "обычно защищённая логином и паролем."
+        ),
+
+        "Менеджер паролей": (
+            "Менеджер паролей — это специальная программа, которая безопасно хранит "
+            "ваши пароли и помогает создавать сложные комбинации."
+        ),
+
+        "Одноранговые сети": (
+            "Одноранговые сети — это сети, где пользователи обмениваются файлами "
+            "напрямую друг с другом без центрального сервера (например, торренты)."
+        ),
+
+        "Доменные имена": (
+            "Доменное имя — это адрес сайта в интернете, например google.com или yandex.ru."
+        ),
+
+        "Антивирусные программы": (
+            "Антивирусные программы — это программы, которые защищают устройство "
+            "от вирусов, вредоносных файлов и интернет-угроз."
+        ),
+    }
+
+    if clicked_word in explanations:
+        await message.answer(explanations[clicked_word])
+    else:
+        await message.answer("Пояснение для этого термина пока недоступно.")
 
 
 # await message.answer("[Привет](www.google.com) всё работает", reply_markup=keyboard4(),parse_mode='MarkdownV2')
@@ -111,6 +193,19 @@ async def main():
         await state.set_state(Survey.question1)
         await message.answer("Привет! Я бот по обучению КиберБезопасности. Начнём обучение?",
                              reply_markup=keyboard1())
+
+    @dp.callback_query()
+    async def handle_inline_buttons(callback: types.CallbackQuery):
+        global clicked_word
+
+        # Сохраняем, на какое слово нажали
+        clicked_word = callback.data
+
+        # Отправляем объяснение
+        await send_word_explanation(callback.message)
+
+        # Обязательно закрываем "часики" у кнопки
+        await callback.answer()
 
     # Команда help
     @dp.message(Command("help"))
@@ -128,9 +223,9 @@ async def main():
     async def send_info(message: types.Message):
         await message.answer("Я простой бот, написанный на aiogram.")
 
-    @dp.message(SurveySecurity.question1)
     # Тут 2 возвратные с других кнопок
 
+    @dp.message(SurveySecurity.question1)
     async def smarthone_hung(message: types.Message, state: FSMContext):
         global normal_text
         if normal_text == "Кража персональных данных":
@@ -143,7 +238,6 @@ async def main():
                                     "\n2.	Не записывайте пароли\n Если нужно запоминать слишком много данных, используйте менеджер паролей."
                                     "\n3.	Удалите неиспользуемые учетные записи\n Чтобы сохранить конфиденциальность, удаляйте личные данные из неиспользуемых сервисов.",reply_markup=keyboard4())
 
-                await message.answer("Выбери слово которое тебе было непонятно", reply_markup=PO_and_danns_keyboard())
                 if message.text == "Назад":
                     await state.set_state(SurveySecurity.question3)
                     await message.answer("О чём бы ты хотел узнать получше?", reply_markup=keyboard3())
@@ -171,7 +265,10 @@ async def main():
                                      "\n К ним относятся открытие незапрошенных вложений в электронной почте, посещение неизвестных веб-страниц, скачивание программ с "
                                      "недоверенных сайтов или одноранговых сетей передачи файлов.",reply_markup=keyboard4())
 
-                await message.answer("Выбери слово которое тебе было непонятно", reply_markup=PO_and_danns_keyboard())
+                await message.answer(
+                    "Выбери слово которое тебе было непонятно",
+                    reply_markup=virus_keyboard()
+                )
                 if message.text == "Назад":
                     await state.set_state(SurveySecurity.question3)
                     await message.answer("О чём бы ты хотел узнать получше?", reply_markup=keyboard3())
@@ -186,7 +283,10 @@ async def main():
                                      "\n 3.	Избегайте спешки и панической реакции. "
                                      "\n Мошенники рассчитывают на них, чтобы заставить вас перейти по ссылке или открыть вложение.",reply_markup=keyboard4())
 
-                # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=inline_keyboard1())
+                await message.answer(
+                    "Выбери слово которое тебе было непонятно",
+                    reply_markup=phishing_keyboard()
+                )
                 if message.text == "Назад":
                     await state.set_state(SurveySecurity.question3)
                     await message.answer("О чём бы ты хотел узнать получше?", reply_markup=keyboard3())
@@ -201,7 +301,11 @@ async def main():
                                      "\n 2.	Не верьте уловкам мошенников, предлагающих слишком низкие цены или внезапное богатство"
                                      "\n Спросите себя: а не слишком ли это хорошо, чтобы быть правдой?",reply_markup=keyboard4())
 
-                await message.answer("Выбери слово которое тебе было непонятно", reply_markup=dom_and_all_keyboard())
+                await message.answer(
+                    "Выбери слово которое тебе было непонятно",
+                    reply_markup=fake_sites_keyboard()
+                )
+
                 if message.text == "Назад":
                     await state.set_state(SurveySecurity.question3)
                     await message.answer("О чём бы ты хотел узнать получше?", reply_markup=keyboard3())
@@ -216,7 +320,11 @@ async def main():
                                      "\n 3.	Будьте внимательны в социальных сетях"
                                      "\n Действия детей и подростков в социальных сетях требуют особой осторожности и внимания.",reply_markup=keyboard4())
 
-                await message.answer("Выбери слово которое тебе было непонятно", reply_markup=anti_virus_keyboard())
+                await message.answer(
+                    "Выбери слово которое тебе было непонятно",
+                    reply_markup=antivirus_keyboard()
+                )
+
                 if message.text == "Назад":
                     await state.set_state(SurveySecurity.question3)
                     await message.answer("О чём бы ты хотел узнать получше?", reply_markup=keyboard3())
@@ -259,7 +367,10 @@ async def main():
                 if message.text == "Назад":
                     await state.set_state(Survey.question2)
                     await message.answer("О чём бы ты хотел узнать поподробнее?", reply_markup=keyboard2())
-
+            await message.answer(
+                "Нажми на слово, если не знаешь его значение",
+                reply_markup=phishing_keyboard()
+            )
 
         elif normal_text == "Неверные настройки конфиденциальности":
             if message.text == "Назад":
@@ -286,12 +397,6 @@ async def main():
                 await message.answer("О чём бы ты хотел узнать поподробнее?", reply_markup=keyboard2())
                 return
 
-    @dp.callback_query(F.data == "send_alert")
-    async def process_callback(callback: types.CallbackQuery):
-        # Или отправить новое сообщение в чат
-        await callback.message.answer("Вы нажали на кнопку и вызвали это сообщение.")
-
-
     @dp.message(SurveySecurity.question3)
     async def continue_survey(message: types.Message, state: FSMContext):
         global normal_text
@@ -304,7 +409,7 @@ async def main():
                 "или даже запретить к ней доступ.",
                 reply_markup=keyboard5())
 
-            # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=)
+            await message.answer("Выбери слово которое тебе было непонятно", reply_markup=data_security_keyboard())
 
         elif message.text == "Утечки данных":
             normal_text = "Утечки данных"
@@ -333,7 +438,11 @@ async def main():
                                  'украсть реквизиты вашей банковской карты.'
                                  , reply_markup=keyboard5())
 
-            # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=)
+            await message.answer(
+                "Выбери слово которое тебе было непонятно",
+                reply_markup=phishing_keyboard()
+            )
+
 
         elif message.text == "Поддельные сайты":
             normal_text = "Поддельные сайты"
@@ -342,7 +451,7 @@ async def main():
                 "Поддельные сайты – это любые сайты, которые мошенники используют незаконно для обмана пользователей или организации вредоносных атак."
                 , reply_markup=keyboard5())
 
-            # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=)
+            await message.answer("Выбери слово которое тебе было непонятно", reply_markup=fake_sites_keyboard())
 
         elif message.text == "Неприемлемый контент":
             normal_text = "Неприемлемый контент"
@@ -358,7 +467,6 @@ async def main():
             await message.answer("Кибербуллинг (он же интернет-травля) – это травля человека или группы людей с использованием технических средств по электронной почте, в мессенджерах, социальных сетях."
                                  , reply_markup=keyboard5())
 
-            # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=)
 
         elif message.text == "Неверные настройки конфиденциальности":
             normal_text = "Неверные настройки конфиденциальности"
@@ -367,7 +475,10 @@ async def main():
                 "Конфиденциальность данных — это один из ключевых аспектов кибербезопасности, который направлен на защиту личной и корпоративной информации от несанкционированного доступа"
                 , reply_markup=keyboard5())
 
-            # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=)
+            await message.answer(
+                "Выбери слово которое тебе было непонятно",
+                reply_markup=privacy_keyboard()
+            )
 
         elif message.text == "Назад":
             await state.set_state(Survey.question2)
@@ -402,8 +513,6 @@ async def main():
                 "\nЗвонки с угрозами могут поступать лично вам или содержать, например, требования выплатить значительную сумму денег.",
                 reply_markup=keyboard5())
 
-            # await message.answer("Выбери слово которое тебе было непонятно", reply_markup=)
-
         # Одна из трех кнопок в начале
 
         elif message.text == "О безопасности в мессенджерах":
@@ -413,8 +522,6 @@ async def main():
                 "Мессенджеры — это одно из самых удобных, а потому популярных средств обмена сообщениями. "
                 "\nКибер-преступники эксплуатируют уязвимости мессенджеров, чтобы получить доступ к сообщениям, рассылают фишинговые ссылки, чтобы заразить ваше "
                 "устройство вирусом и заполучить ваши персональные данные, взламывают аккаунты пользователей и рассылают им просьбы о перечислении денег.", reply_markup=keyboard5())
-
-            await message.answer("***Нажми на слово, если не знаешь его значение", reply_markup=fish_virus_and_account_keyboard())
 
         elif message.text == "Назад":
             await state.set_state(Survey.question1)
